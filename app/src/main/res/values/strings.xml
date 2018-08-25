@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CustomView</string>
+    <string name="framlayout_behavior">com.study.customview.customview.coordinatorlayout.MyBehavior</string>
+    <string name="recyclerview_behavior">com.study.customview.customview.coordinatorlayout.RecyclerViewBehavior</string>
+</resources>
