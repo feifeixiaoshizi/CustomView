@@ -3,6 +3,7 @@ package com.study.customview.customview.surface;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
@@ -58,8 +59,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         //初始化画笔
         paint = new Paint();
-        //paint.setStyle(Paint.Style.STROKE);
-        paint.setStyle(Paint.Style.FILL);
+        paint.setStyle(Paint.Style.STROKE);
+        //paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(2);
         paint.setAntiAlias(true);
         paint.setColor(Color.RED);
@@ -114,8 +115,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-
-    //绘制圆形,理解：每次调用draw方法都是一次重新的绘制，之前的绘制到画布上的内容会丢失，要在一个空白的画布上重新绘制。
+    //绘制圆形,理解：每次调用draw方法绘制，之前的绘制到画布上的内容不会丢失，需要清空画布再绘制，否则会出现错乱。
     private void draw(float radius) {
         try {
             //锁定画布并返回画布对象
@@ -124,7 +124,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             //设置画布的中心点
             canvas.translate(getMeasuredWidth() / 2, getMeasuredHeight() / 2);
             //接下去就是在画布上进行一下draw
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.WHITE); //不添加该行，会出错乱，因为原来的canvas上有内容
             drawCircle(canvas,radius);
             drawBoder(canvas,radius);
 
@@ -136,6 +136,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
     }
+
 
     private void drawCircle(Canvas canvas,float radius){
         canvas.save();
@@ -176,12 +177,22 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
+    /**
+     * 清屏后会变为黑色背景
+     */
+    private void clearCanvans1(){
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+    }
+
+    /**
+     *清屏后会变为黑色背景
+     */
     private void clearCanvans() {
         Paint p = new Paint();
         //清屏
         p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         canvas.drawPaint(p);
-        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+
     }
 
 

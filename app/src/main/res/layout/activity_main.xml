@@ -117,7 +117,6 @@
     </com.study.customview.customview.viewgroup.TestViewDragerHelper>
 
     <com.study.customview.customview.surface.MySurfaceView
-        android:visibility="gone"
         android:layout_width="100dp"
         android:layout_height="100dp" />
 
