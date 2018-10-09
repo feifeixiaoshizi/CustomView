@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.study.customview.customview.R;
+
 /**
  * Created by Administrator on 2018/1/22 0022.
  */
@@ -47,7 +49,11 @@ public class TestViewDragerHelper extends LinearLayout {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             Log.d(TAG,"tryCaptureView->"+"child:"+child);
-            return true;
+            if(child.getId()!= R.id.tv){
+
+                return true;
+            }
+            return false;
         }
 
         @Override
@@ -129,9 +135,9 @@ public class TestViewDragerHelper extends LinearLayout {
             super.onViewReleased(releasedChild, xvel, yvel);
             //通过Scroller提供数值，不断的重新绘制实现动画。
             //负责提供过程中的值
-            viewDragHelper.settleCapturedViewAt(initLeft,initTop);
+            //viewDragHelper.settleCapturedViewAt(initLeft,initTop);
             //当值改变后触发重新绘制，当draw完毕后，结合computeScroll（）重新触发下次的draw（）。（递归）
-            invalidate();
+            //invalidate();
 
         }
 
@@ -180,6 +186,9 @@ public class TestViewDragerHelper extends LinearLayout {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         Log.d(TAG,"dispatchTouchEvent:"+ev.getAction());
+        if(getTargetView(ev)!=null){
+            getParent().requestDisallowInterceptTouchEvent(true);
+        }
         return super.dispatchTouchEvent(ev);
     }
 
@@ -216,12 +225,49 @@ public class TestViewDragerHelper extends LinearLayout {
     // 3. 转交触摸事件的处理
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(getTargetView(event)==null){
+            return  super.onTouchEvent(event);
+        }
+
         try {
-            viewDragHelper.processTouchEvent(event);
+             viewDragHelper.processTouchEvent(event);
             Log.d(TAG,"onTouchEvent:"+event.getAction());
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public View getTargetView(MotionEvent ev) {
+        int childCount = getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+            if (inRangeOfView(getChildAt(i), ev)) {
+                return getChildAt(i);
+            }
+        }
+        return null;
+    }
+
+    public  boolean inRangeOfView(View view, MotionEvent ev) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+        Log.d(TAG,"x:"+x+"y:"+y);
+        Log.d(TAG,"X:"+ev.getX()+"Y:"+ev.getY());
+        Log.d(TAG,"RawX:"+ev.getRawX()+"RawY:"+ev.getRawY());
+        if (ev.getRawX() < x || ev.getRawX() > (x + view.getWidth()) || ev.getRawY() < y
+                || ev.getRawY() > (y + view.getHeight())) {
+            return false;
         }
         return true;
     }
+
+
+
+
 }

@@ -7,10 +7,12 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -28,6 +30,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Paint paint;
     private Paint paint1;
     private Path path;
+    public  static  final  String TAG = "MySurfaceView";
 
 
     public MySurfaceView(Context context) {
@@ -48,6 +51,10 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     private void initView() {
         surfaceHolder = getHolder();
+        //以下两行代码重要代码（***** 解决清屏后的黑色背景问题）
+        setZOrderOnTop(true);//使surfaceview放到最顶层
+        surfaceHolder.setFormat(PixelFormat.TRANSLUCENT);//使窗口支持透明度
+
         //设置回调函数
         surfaceHolder.addCallback(this);
         //设置可点击事件
@@ -87,6 +94,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         //在监听中surfaceCreated之后就可以开启子线程在画布上开始绘制了
         //开启线程开始绘制
         new Thread(this).start();
+        Log.d(TAG,"surfaceCreated"+holder.getSurface());
 
 
 
@@ -94,11 +102,15 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.d(TAG,"surfaceChanged:"+"format"+format+"width:"+width+"height:"+height);
 
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.d(TAG,"surfaceDestroyed"+holder.getSurface());
+
+
 
     }
 
@@ -124,7 +136,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             //设置画布的中心点
             canvas.translate(getMeasuredWidth() / 2, getMeasuredHeight() / 2);
             //接下去就是在画布上进行一下draw
-            canvas.drawColor(Color.WHITE); //不添加该行，会出错乱，因为原来的canvas上有内容
+            //canvas.drawColor(Color.WHITE); //不添加该行，会出错乱，因为原来的canvas上有内容
+            clearCanvans();
             drawCircle(canvas,radius);
             drawBoder(canvas,radius);
 
@@ -139,7 +152,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
 
     private void drawCircle(Canvas canvas,float radius){
-        canvas.save();
+        int saved = canvas.saveLayer(null, null, Canvas.ALL_SAVE_FLAG);
         canvas.rotate(-360*radius/100);
         //路径重置，就是清空原来的添加到路径对象中的路径。（*****）否则会把原来的路径加上现在的路径一起绘制起来。
         path.reset();
@@ -153,7 +166,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         path.addRect(rectF, Path.Direction.CCW);
         // clearCanvans();
         canvas.drawPath(path, paint1);
-        canvas.restore();
+        canvas.restoreToCount(saved);
 
     }
 
@@ -181,7 +194,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * 清屏后会变为黑色背景
      */
     private void clearCanvans1(){
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
+
     }
 
     /**

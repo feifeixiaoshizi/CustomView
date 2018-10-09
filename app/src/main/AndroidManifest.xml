@@ -22,6 +22,7 @@
         <activity android:name=".AnimatorActivity"/>
         <activity android:name=".EventActivity"/>
         <activity android:name=".ScrollerActivity"/>
+        <activity android:name=".TestDragerActivity"/>
         <activity android:name=".coordinatorlayout.CoordinatorActivity"/>
     </application>
 
