@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/gray"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--头像区域-->
+    <include android:id="@+id/iv_img" layout="@layout/item_chat_view_headpic" />
+
+    <!--具体的子view的类型-->
+    <FrameLayout
+        android:layout_toRightOf="@id/iv_img"
+        android:id="@+id/fl_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"></FrameLayout>
+
+    <!--发送消息的状态-->
+    <include
+        layout="@layout/item_chat_view_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/fl_content"
+         />
+
+</RelativeLayout>

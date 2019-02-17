@@ -15,4 +15,18 @@
     android:layout_width="200dp"
     android:layout_height="200dp" />
 
+    <com.study.customview.customview.chatview.TextChatView
+        android:id="@+id/text_chat"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </com.study.customview.customview.chatview.TextChatView>
+
+
+    <com.study.customview.customview.chatview.ImageChatView
+        android:id="@+id/image_chat"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></com.study.customview.customview.chatview.ImageChatView>
 </LinearLayout>
